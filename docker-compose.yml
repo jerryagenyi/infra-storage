@@ -41,9 +41,25 @@ services:
     networks:
       - shared-services
 
+  whisper-stt:
+    image: fedirz/faster-whisper-server:latest-cpu
+    environment:
+      - WHISPER__MODEL=small
+      - WHISPER__DEVICE=cpu
+      - WHISPER__COMPUTE_TYPE=int8
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - whisper-models:/root/.cache/huggingface
+    networks:
+      - shared-services
+    restart: unless-stopped
+
 volumes:
   minio-data:
+  whisper-models:
 
 networks:
   shared-services:
-    external: true
+    name: shared-services
+    driver: bridge
